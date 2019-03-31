@@ -1,0 +1,40 @@
+server:
+  port: 7001
+# 配置mybatis-plus
+mybatis-plus:
+  # 配置扫描xml
+  mapper-locations: classpath*:mybatis/**/*.xml
+  # 实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.ptw.pojo
+logging:
+  level:
+    root: info
+    com: # 根据本地包修改日志级别
+      ptw: 
+        mapper: debug
+spring:
+  #session: 
+   # store-type: none
+  thymeleaf: 
+    cache: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/shiro
+    username: root
+    password: mysqladmin
+    driver-class-name: com.mysql.jdbc.Driver
+  #jackson: 
+   # date-format: yyyy-MM-dd
+  profiles: 
+    active: dev
+---
+spring:
+  profiles: dev #开发环境
+system-params: 
+  imagePath: E://image//
+  filePath: E://
+---
+spring:
+  profiles: release #开发环境
+system-params: 
+  imagePath: /home/image/
+  filePath: /home/file/

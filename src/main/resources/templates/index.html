@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <meta charset="utf-8">
+  <title>shiro</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="/layui/css/layui.mobile.css"  media="all">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">Shiro-后台管理</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item"><a href="">控制台</a></li>
+      <li class="layui-nav-item"><a class="dump" href="javascript:;" data-id=11 data-url='/login' data-title='用户'>用户</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">系统消息</a>
+        <dl class="layui-nav-child">
+          <dd><a href="javascript:;" data-id=10 data-url='/login' data-title='列表一'>邮件管理</a></dd>
+          <dd><a href="">消息管理</a></dd>
+          <dd><a href="">授权管理</a></dd>
+        </dl>
+      </li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img"><shiro:principal property="realname" /></a>
+        <dl class="layui-nav-child">
+          <dd><a href="">基本资料</a></dd>
+          <dd><a href="">安全设置</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item"><a th:href="@{/logout}">注销</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <!-- <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;">所有模板</a>
+          <dl class="layui-nav-child">
+            <dd><a class="dump" href="javascript:;" data-id=1 data-url='/page/project/list' data-title='项目模板'>项目模板</a></dd>
+            <dd><a class="dump" href="javascript:;" data-id=1 data-url='/page/template/list' data-title='模板列表'>模板列表</a></dd>
+            <dd><a class="dump" href="javascript:;" data-id=2 data-url='/page/team/list' data-title='团队信息'>团队信息</a></dd>
+            <dd><a class="dump" href="javascript:;" data-id=6 data-url='/page/customer/list' data-title='游客信息'>游客信息</a></dd>
+            <dd><a class="dump" href="javascript:;" data-id=6 data-url='/page/subject/list' data-title='具体题目'>具体题目</a></dd>
+          </dl>
+        </li> -->
+       <!--  <li class="layui-nav-item">
+          <a href="javascript:;">数据字典</a>
+          <dl class="layui-nav-child">
+            <dd><a class="dump" href="javascript:;" data-id=2 data-url='/page/template/category/list' data-title='模板列表'>模板分类</a></dd>
+            <dd><a class="dump" href="javascript:;" data-id=6 data-url='/page/subject/category/list' data-title='题目分类'>题目分类</a></dd>
+          </dl>
+        </li> -->
+        <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;" shiro:hasAnyPermissions="user:view,role:view,resource:view">系统信息</a>
+          <dl class="layui-nav-child">
+            <dd shiro:hasPermission="user:view"><a class="dump" href="javascript:;" data-id=1 data-url='/user/list' data-title='用户列表'>用户列表</a></dd>
+            <dd shiro:hasPermission="role:view"><a class="dump" href="javascript:;" data-id=2 data-url='/user/list2' data-title='角色列表'>角色列表</a></dd>
+            <dd shiro:hasPermission="resource:view"><a class="dump" href="javascript:;" data-id=3 data-url='/page/users/list' data-title='资源列表'>资源列表</a></dd>
+            <!-- <dd><a class="dump" href="javascript:;"data-id=5 data-url='/login' data-title='用户信息反馈'>用户信息反馈</a></dd> -->
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="layui-body" style="margin:-8px 5px;">
+	    <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
+		    <ul class="layui-tab-title"></ul>
+		    <div class="layui-tab-content"></div>
+		</div>
+		<ul class="rightmenu" style="display:none">
+            <li data-type="closethis">关闭当前</li>
+            <li data-type="closeall">关闭所有</li>
+        </ul>
+  </div>
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    <p>© 2019 <a href="http://www.51tour.com/" target="_blank">北京凤凰假期国际旅行社</a></p>
+  </div>
+</div>
+<script src="/layui/layui.all.js"></script>
+<script>
+var $ = jQuery = layui.jquery;
+var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+var layer = layui.layer;
+var active = {
+    tabAdd: function (url, id,title) {
+        //新增一个Tab项
+        element.tabAdd('demo', {
+            title: title //用于演示
+          , content: '<iframe data-frameid="'+id+'" frameborder="0" name="content" scrolling="auto" width="100%" src="' + url + '"></iframe>'
+          , id: id //实际使用一般是规定好的id，这里以时间戳模拟下
+        })
+        CustomRightClick(id);//绑定右键菜单
+        FrameWH();//计算框架高度
+    }
+  , tabChange: function (id) {
+      //切换到指定Tab项
+      element.tabChange('demo', id); //切换到：用户管理
+      $("iframe[data-frameid='"+id+"']").attr("src",$("iframe[data-frameid='"+id+"']").attr("src"))//切换后刷新框架
+  }
+    , tabDelete: function (id) {
+        element.tabDelete("demo", id);//删除
+    }
+    , tabDeleteAll: function (ids) {//删除所有
+        $.each(ids, function (i,item) {
+            element.tabDelete("demo", item);
+        })
+    }
+};
+$(function(){
+	$(".dump").click(function () {
+	    var dataid = $(this);
+	    if ($(".layui-tab-title li[lay-id]").length <= 0) {
+	        active.tabAdd(dataid.attr("data-url"), dataid.attr("data-id"),dataid.attr("data-title"));
+	    } else {
+	        var isData = false;
+	        $.each($(".layui-tab-title li[lay-id]"), function () {
+	            if ($(this).attr("lay-id") == dataid.attr("data-id")) {
+	                isData = true;
+	            }
+	        })
+	        if (isData == false) {
+	            active.tabAdd(dataid.attr("data-url"), dataid.attr("data-id"),dataid.attr("data-title"));
+	        }
+	    }
+	    active.tabChange(dataid.attr("data-id"));
+	})
+	$(".rightmenu li").click(function () {
+            if ($(this).attr("data-type") == "closethis") {
+                active.tabDelete($(this).attr("data-id"))
+            } else if ($(this).attr("data-type") == "closeall") {
+                var tabtitle = $(".layui-tab-title li");
+                var ids = new Array();
+                $.each(tabtitle, function (i) {
+                    ids[i] = $(this).attr("lay-id");
+                })
+ 
+                active.tabDeleteAll(ids);
+            }
+ 
+            $('.rightmenu').hide();
+        })
+})
+function FrameWH() {
+    var h = $(window).height() -41- 10 - 60 -10-44 -10;
+    $("iframe").css("height",h+"px");
+}
+//绑定右键菜单
+function CustomRightClick(id) {
+    //取消右键 
+    $('.layui-tab-title li').on('contextmenu', function () { return false; })
+    $('.layui-tab-title,.layui-tab-title li').click(function () {
+        $('.rightmenu').hide();
+    });
+    //桌面点击右击 
+    $('.layui-tab-title li').on('contextmenu', function (e) {
+        var popupmenu = $(".rightmenu");
+        popupmenu.find("li").attr("data-id",id);
+        l = ($(document).width() - e.clientX) < popupmenu.width() ? (e.clientX - popupmenu.width()) : e.clientX;
+        t = ($(document).height() - e.clientY) < popupmenu.height() ? (e.clientY - popupmenu.height()) : e.clientY;
+        popupmenu.css({ left: l, top: t }).show();
+        //alert("右键菜单")
+        return true;
+    });
+}
+$(window).resize(function () {
+    FrameWH();
+})
+</script>
+</body>
+</html>
