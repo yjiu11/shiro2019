@@ -1,6 +1,7 @@
 package com.yjiu.shiro.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.yjiu.shiro.mapper.SysUserMapper;
 import com.yjiu.shiro.pojo.SysResource;
@@ -19,6 +21,7 @@ import com.yjiu.shiro.service.SysResourceService;
 import com.yjiu.shiro.service.SysRoleService;
 import com.yjiu.shiro.service.SysUserService;
 import com.yjiu.shiro.tools.Kit;
+import com.yjiu.shiro.tools.PTWResult;
 
 /**
  * <p>
@@ -133,4 +136,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		return result;
 	}
 
+	@Override
+	public PTWResult selectByPage(Page<SysUser> page, String field, String order, String realName, String username) {
+		boolean flag = StringUtils.equals(order, "desc")?false:true;
+		EntityWrapper<SysUser> wrapper = new EntityWrapper<SysUser>();
+		if(!StringUtils.isEmpty(realName)) {
+			System.out.println("realname not null:"+realName);
+			wrapper.like("realname", realName);
+		}
+		if(!StringUtils.isEmpty(username)) {
+			System.out.println("username not null:"+username);
+			wrapper.like("username", username);
+		}
+		//求总数，不需要排序
+//		int total = selectCount(wrapper);
+		wrapper.orderBy(field, flag);
+		Page<SysUser> selectPage = this.selectPage(page, wrapper);
+		System.out.println(selectPage.getTotal());
+		return PTWResult.ok(selectPage.getRecords(),selectPage.getTotal());
+	}
 }

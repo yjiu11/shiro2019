@@ -2,10 +2,12 @@ package com.yjiu.shiro.service;
 
 import java.util.Set;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.yjiu.shiro.pojo.SysResource;
 import com.yjiu.shiro.pojo.SysRole;
 import com.yjiu.shiro.pojo.SysUser;
+import com.yjiu.shiro.tools.PTWResult;
 
 /**
  * <p>
@@ -26,4 +28,6 @@ public interface SysUserService extends IService<SysUser> {
 	public Set<String> findResourceStringById(long user_id);
 	//有资源所有信息
 	public Set<SysResource> findResourcesById(long user_id);
+	//分页+排序+搜索
+	PTWResult selectByPage(Page<SysUser> page,String field,String order, String realName,String username);
 }

@@ -10,8 +10,9 @@ logging:
   level:
     root: info
     com: # 根据本地包修改日志级别
-      ptw: 
-        mapper: debug
+      yjiu: 
+        shiro: 
+          mapper: debug
 spring:
   #session: 
    # store-type: none

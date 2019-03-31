@@ -10,7 +10,6 @@
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="type" property="type" />
-        <result column="url" property="url" />
         <result column="parent_id" property="parentId" />
         <result column="permission" property="permission" />
         <result column="available" property="available" />
@@ -19,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id AS id, name AS name, type AS type, url AS url, parent_id AS parentId, permission AS permission, available AS available, open AS open
+        id AS id, name AS name, type AS type, parent_id AS parentId, permission AS permission, available AS available, open AS open
     </sql>
 
 </mapper>

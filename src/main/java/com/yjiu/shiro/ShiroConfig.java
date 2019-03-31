@@ -51,7 +51,6 @@ public class ShiroConfig {
         // 权限控制map.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         filterChainDefinitionMap.put("/", "anon");
-        filterChainDefinitionMap.put("/index", "anon");
         filterChainDefinitionMap.put("/layui/**", "anon");
         filterChainDefinitionMap.put("/common/**", "anon");
         filterChainDefinitionMap.put("/bootstrap/**", "anon");
