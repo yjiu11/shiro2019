@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import com.yjiu.shiro.filter.ResourceCheckFilter;
 import com.yjiu.shiro.pojo.UserRealm;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
@@ -107,12 +106,6 @@ public class ShiroConfig {
     @Bean
     public ShiroDialect shiroDialect(){
 		return new ShiroDialect();
-	}
-    @Bean
-    public ResourceCheckFilter resourceCheckFilter(){
-    	ResourceCheckFilter filter = new ResourceCheckFilter();
-    	filter.setErrorUrl("unauth");
-		return filter;
 	}
     /**
      * 缓存管理器
