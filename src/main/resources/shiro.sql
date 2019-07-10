@@ -1,23 +1,3 @@
-/*
-Navicat MySQL Data Transfer
-
-Source Server         : MySQL_3306
-Source Server Version : 50622
-Source Host           : localhost:3306
-Source Database       : shiro
-
-Target Server Type    : MYSQL
-Target Server Version : 50622
-File Encoding         : 65001
-
-Date: 2019-03-31 19:42:24
-*/
-
-SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for sys_resource
--- ----------------------------
 DROP TABLE IF EXISTS `sys_resource`;
 CREATE TABLE `sys_resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -25,38 +5,23 @@ CREATE TABLE `sys_resource` (
   `type` varchar(10) DEFAULT NULL,
   `parent_id` int(11) DEFAULT NULL,
   `permission` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `available` varchar(4) DEFAULT NULL,
   `open` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_resource
 -- ----------------------------
-INSERT INTO `sys_resource` VALUES ('0', 'root', 'menu', '-1', '', '1', '1');
-INSERT INTO `sys_resource` VALUES ('1', '用户权限', 'menu', '0', '', '1', '0');
-INSERT INTO `sys_resource` VALUES ('2', '用户添加', 'menu', '1', 'user:create', '1', null);
-INSERT INTO `sys_resource` VALUES ('3', '用户修改', 'menu', '1', 'user:update', '1', null);
-INSERT INTO `sys_resource` VALUES ('4', '用户查询', 'menu', '1', 'user:view', '1', null);
-INSERT INTO `sys_resource` VALUES ('5', '用户删除', 'menu', '1', 'user:delete', '1', null);
-INSERT INTO `sys_resource` VALUES ('6', '导航', 'menu', '0', 'page:top', '1', '0');
-INSERT INTO `sys_resource` VALUES ('7', '角色权限', 'menu', '0', null, '1', '0');
-INSERT INTO `sys_resource` VALUES ('8', '角色添加', 'menu', '7', 'role:create', '1', null);
-INSERT INTO `sys_resource` VALUES ('9', '角色修改', 'menu', '7', 'role:update', '1', null);
-INSERT INTO `sys_resource` VALUES ('10', '角色查询', 'menu', '7', 'role:view', '1', null);
-INSERT INTO `sys_resource` VALUES ('11', '角色删除', 'menu', '7', 'role:delete', '1', null);
-INSERT INTO `sys_resource` VALUES ('12', '资源权限', 'menu', '0', null, '1', '0');
-INSERT INTO `sys_resource` VALUES ('13', '资源添加', 'menu', '12', 'resource:create', '1', null);
-INSERT INTO `sys_resource` VALUES ('14', '资源修改', 'menu', '12', 'resource:update', '1', null);
-INSERT INTO `sys_resource` VALUES ('15', '资源查询', 'menu', '12', 'resource:view', '1', null);
-INSERT INTO `sys_resource` VALUES ('16', '资源删除', 'menu', '12', 'resource:delete', '1', null);
-INSERT INTO `sys_resource` VALUES ('17', '角色查询', 'menu', '7', null, '1', null);
-INSERT INTO `sys_resource` VALUES ('18', '页面显示', 'menu', '0', 'page:*', '1', '0');
-INSERT INTO `sys_resource` VALUES ('19', '分配角色', 'menu', '1', 'user:allow_role', '1', null);
-INSERT INTO `sys_resource` VALUES ('20', '分配资源', 'menu', '7', 'role:*', '1', null);
-INSERT INTO `sys_resource` VALUES ('22', '权限列表', 'menu', '0', 'resource:view', '1', '0');
-INSERT INTO `sys_resource` VALUES ('23', '通用资源', 'menu', '0', 'common:*', '1', '0');
-INSERT INTO `sys_resource` VALUES ('26', '通用资源2', 'menu', '23', 'common:**', '1', null);
+INSERT INTO `sys_resource` VALUES ('1', '系统管理', 'menu', '0', '', '/', '1', '1');
+INSERT INTO `sys_resource` VALUES ('2', '系统信息', 'menu', '1', '', '/', '1', '1');
+INSERT INTO `sys_resource` VALUES ('3', '用户管理', 'menu', '2', 'user:*', '/page/sysuser/list', '1', null);
+INSERT INTO `sys_resource` VALUES ('4', '角色管理', 'menu', '2', 'role:*', '/page/sysrole/list', '1', null);
+INSERT INTO `sys_resource` VALUES ('5', '资源管理', 'menu', '2', 'resource:*', '/page/sysresource/list/', '1', null);
+INSERT INTO `sys_resource` VALUES ('6', '接口平台', 'menu', '0', '', '/', '1', '1');
+INSERT INTO `sys_resource` VALUES ('7', '中控平台', 'menu', '6', '', '/', '1', '1');
+INSERT INTO `sys_resource` VALUES ('8', '马蜂窝', 'menu', '7', 'mfw:*', '/page/mfworder/list', '1', null);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -69,20 +34,20 @@ CREATE TABLE `sys_role` (
   `resource_ids` varchar(255) DEFAULT NULL,
   `available` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES ('1', 'admin', '超级管理员', '0,1,2,3,4,5,19,6,7,8,9,10,11,17,20,12,13,14,15,16,18,22,23,26', '1');
-INSERT INTO `sys_role` VALUES ('5', 'deploy', '发布管理员', '0,1,4,5,19,6,7,8,9,10,11,17,20,12,13,14,15,16,18,22,23', '1');
-INSERT INTO `sys_role` VALUES ('6', 'manager', '项目经理', '0,1,2,6,18,22,23', '1');
-INSERT INTO `sys_role` VALUES ('7', 'system', '系统管理员', '0,1,2,3,4,5,19,6,7,8,9,12,13,14,15,16,18', '1');
+INSERT INTO `sys_role` VALUES ('1', 'admin', '超级管理员', '1,2,3,4,6,7,8', '1');
+INSERT INTO `sys_role` VALUES ('5', 'deploy', '发布管理员', '1,4,5,19,6,7,8,9,10,11,17,20,12,13,14,15,16,18,22,23', '1');
+INSERT INTO `sys_role` VALUES ('6', 'manager', '项目经理', '1,2,6,18,22,23', '1');
+INSERT INTO `sys_role` VALUES ('7', 'system', '系统管理员', '1,2,3,4,5,19,6,7,8,9,12,13,14,15,16,18', '1');
 INSERT INTO `sys_role` VALUES ('8', 'apply', '申请管理员', '18', '1');
 INSERT INTO `sys_role` VALUES ('9', 'Maintain', '维护管理员', '18', '1');
 INSERT INTO `sys_role` VALUES ('10', 'product', '产品管理员', '18', '1');
 INSERT INTO `sys_role` VALUES ('11', 'approval', '审批管理员', '18', '1');
-INSERT INTO `sys_role` VALUES ('15', 'base', '基础角色', '0,1,2,4,6,7,8,9,10,11,12,14,15,18,23', '1');
+INSERT INTO `sys_role` VALUES ('15', 'base', '基础角色', '1,2,4,6,7,8,9,10,11,12,14,15,18,23', '1');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -98,19 +63,13 @@ CREATE TABLE `sys_user` (
   `phone` varchar(20) DEFAULT NULL,
   `locked` varchar(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '张三', 'e00cf25ad42683b3df678c61f42c6bda', '1', 'yjsfgn@163.com', '13939393331', '2');
-INSERT INTO `sys_user` VALUES ('7', 'lisi23', '李四', '1134b8e47e43e73e4e8c08bf1d725136', '1,5', 'sdgsfgn@163.com', '13638329323', '0');
-INSERT INTO `sys_user` VALUES ('8', 'wangwu', '王五', '738d992e4099926873bd8520e377ddab', '6', 'huisfgn11@163.com', '13532919481', '2');
-INSERT INTO `sys_user` VALUES ('13', 'sfgn', '慧艳', 'a1cce9106626be9d2f140d888bc463cf', '5,6', '1580766061@qq.com', '15010627375', '2');
-INSERT INTO `sys_user` VALUES ('14', 'zhenzidan', '贞子', 'c1ff13e541ec84718a4414af787a87e0', '0', 'yjsfgn@163.com', '13939393331', '2');
-INSERT INTO `sys_user` VALUES ('17', 'hmu88', '张三', 'e81a74c64665e45d1aac46af02698fb1', '0', 'yjiu11@163.com', '13939393331', '2');
-INSERT INTO `sys_user` VALUES ('18', 'test', '测试人员', '1fb0e331c05a52d5eb847d6fc018320d', '15', 'yjiusfgn@163.com', '13919918383', '0');
-INSERT INTO `sys_user` VALUES ('19', 'yjiu', '刘洋', 'a3846c4ec6ca4f175527df0498d8fc85', '15', 'yjiu11@163.com', '13641305513', '0');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '管理员', 'e00cf25ad42683b3df678c61f42c6bda', '1,5,6', 'yjsfgn@163.com', '13939393331', '2');
+INSERT INTO `sys_user` VALUES ('28', 'yjiu', '刘洋', '30d6b3fe65a2b912352e241b4a5aebc9', '1,5', '1364130@163.com', '13641305513', '2');
 
 -- ----------------------------
 -- Procedure structure for insert_users
