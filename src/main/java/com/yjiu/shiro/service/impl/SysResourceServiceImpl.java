@@ -1,10 +1,18 @@
 package com.yjiu.shiro.service.impl;
 
-import com.yjiu.shiro.pojo.SysResource;
-import com.yjiu.shiro.mapper.SysResourceMapper;
-import com.yjiu.shiro.service.SysResourceService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.yjiu.shiro.mapper.SysResourceMapper;
+import com.yjiu.shiro.pojo.SysResource;
+import com.yjiu.shiro.service.SysResourceService;
+import com.yjiu.shiro.tools.PTWResult;
 
 /**
  * <p>
@@ -16,5 +24,21 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysResource> implements SysResourceService {
-
+	@Override
+	public PTWResult selectByPage(Page<SysResource> page, String field, String order,
+			Map<String, String> searchFields) {
+		boolean flag = StringUtils.equals(order, "desc")?false:true;
+		EntityWrapper<SysResource> wrapper = new EntityWrapper<SysResource>();
+		Set<String> keys = searchFields.keySet();
+		for (String k : keys) {
+			if(!StringUtils.isEmpty(searchFields.get(k))) {
+				System.out.println(k+":"+searchFields.get(k));
+				wrapper.like(k, searchFields.get(k));
+			}
+		}
+		wrapper.orderBy(field, flag);
+		Page<SysResource> selectPage = this.selectPage(page, wrapper);
+		System.out.println(selectPage.getTotal());
+		return PTWResult.ok(selectPage.getRecords(),selectPage.getTotal());
+	}
 }

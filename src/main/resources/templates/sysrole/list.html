@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>用户列表</title>
+  <title>后台管理系统</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,24 +10,33 @@
 </head>
 <body>
 <div class="search">
-  账号：
+	角色编码:
+<div class='layui-inline'>
+<input class='layui-input' name='role' id='role' autocomplete='off'>
+</div>
+角色描述:
+<div class='layui-inline'>
+<input class='layui-input' name='description' id='description' autocomplete='off'>
+</div>
+
+    <!-- 项目编号：
   <div class="layui-inline">
-    <input class="layui-input" name="username" id="username" autocomplete="off">
-  </div>
-  姓名：
-  <div class="layui-inline">
-    <input class="layui-input" name="realname" id="realname" autocomplete="off">
-  </div>
+    <input class="layui-input" name="id" id="demoReload_ID" autocomplete="off">
+  </div> -->
   <button class="layui-btn" data-type="reload">搜索</button>
 </div>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
 <script src="/layui/layui.all.js" charset="utf-8"></script>
+<!-- 发布状态 -->
+<script type="text/html" id="switchTpl">
+  <input type="checkbox" data-id="{{d.id}}" name="releaseStatus" value="{{d.releaseStatus}}" lay-skin="switch" lay-text="已发布|未发布" lay-filter="sexDemo" {{ d.releaseStatus == 1 ? 'checked' : '' }}>
+</script>
 <!-- 头部工具栏 -->
 <script type="text/html" id="toolbarDemo">
   <div class="layui-btn-container">
-	<button class="layui-btn layui-btn-sm" lay-event="add">添加用户</button>
-	<button class="layui-btn layui-btn-sm" lay-event="del">删除用户</button>
+    <button class="layui-btn layui-btn-sm" lay-event="add">添加角色</button>
+	<button class="layui-btn layui-btn-sm" lay-event="del">删除角色</button>
   </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -35,22 +44,6 @@
   <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
 </script>
 <script>
-
-function createTime(v){
-	var date = new Date(v);
-    var y = date.getFullYear();
-    var m = date.getMonth()+1;
-    m = m<10?'0'+m:m;
-    var d = date.getDate();
-    d = d<10?("0"+d):d;
-    var h = date.getHours();
-    h = h<10?("0"+h):h;
-    var M = date.getMinutes();
-    M = M<10?("0"+M):M;
-    var S = date.getSeconds();
-    var str = y+"-"+m+"-"+d+" "+h+":"+M+":"+S;
-    return str;
-}
 layui.use('table', function(){
   var table = layui.table,form = layui.form;
   table.render({
@@ -58,19 +51,20 @@ layui.use('table', function(){
     ,elem: '#test'
     ,autoSort:false
     ,toolbar: '#toolbarDemo'
-    ,url:'/user/list/data'
+    ,url:'/sysrole/list/data'
     ,cols: [
     	[
     		{type:'checkbox'}
-      		,{field:'username', title: '账号', sort: true}
-      		,{field:'realname',  title: '姓名', sort: true}
-      		/* ,{field:'roleIds',  title: '角色编号', sort: true} */
-      		,{field:'email',  title: '邮箱', sort: true}
-      		,{field:'phone',  title: '手机', sort: true}
-      		,{field:'locked',  title: '是否锁定', sort: true}
+      		/* ,{field:'id', title: 'id', sort: true} */
+,{field:'role', title: '角色编码', sort: true}
+,{field:'description', title: '角色描述', sort: true}
+/* ,{field:'resourceIds', title: 'resourceIds', sort: true} */
+,{field:'available', title: '是否可用', sort: true}
+
       		,{title:'操作',fixed: 'right', width:200, align:'center', toolbar: '#barDemo'}
     	]
     ]
+    ,limit:18
     ,page: true
   });
   
@@ -101,7 +95,7 @@ layui.use('table', function(){
     } else if(obj.event === 'del'){
       layer.confirm('确定要删除么', function(index){
     	 $.ajax({
-    		url:'/user/batchDel',
+    		url:'/sysrole/batchDel',
     		data:{ids:data.id},
     		success:function(data){
     			if(data.code==0){
@@ -113,23 +107,30 @@ layui.use('table', function(){
     		}
     	}) 
       });
-    } 
-     else if(obj.event === 'edit'){
-    	location.href="/page/user/edit?userId="+data.userId
+    } else if(obj.event === 'edit'){
+    	//layer.alert(JSON.stringify(data));
+      //layer.alert('编辑行：<br>'+ JSON.stringify(data))
+      location.href="/page/sysrole/add?id="+data.id
     }
   });
   	var $ = layui.$, active = {
     reload: function(){
-      var realname = $('#realname');
-      var username = $("#username");
+      //var demoReload = $('#demoReload');
+      var role = $('#role');
+var description = $('#description');
+
+      //var id=$("#demoReload_ID");
       //执行重载
       table.reload('test', {
         page: {
           curr: 1 //重新从第 1 页开始
         }
         ,where: {
-        	realname: realname.val()
-           ,username: username.val()
+        	role:role.val(),
+description:description.val(),
+
+        	  //name: demoReload.val()
+        	  //,templet_id:id.val()
         }
       });
     }
@@ -140,7 +141,7 @@ layui.use('table', function(){
      var checkStatus = table.checkStatus(obj.config.id);
      switch(obj.event){
        case 'add':
-    	   location.href='/page/user/add'
+    	   location.href='/page/sysrole/add'
        break;
        case 'del':
     	   var data = checkStatus.data;
@@ -150,11 +151,11 @@ layui.use('table', function(){
     	   })
     	layer.confirm('确定要删除么', function(index){
     	 $.ajax({
-    		url:'/user/batchDel',
+    		url:'/sysrole/batchDel',
     		data:{ids:ids.join(",")},
     		success:function(data){
     			if(data.code==0){
-    				location.href='/user/list'    				
+    				location.href='/page/sysrole/list'    				
     			}else{
     				layer.alert(data.msg)
     			}

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  * <p>
@@ -26,8 +27,8 @@ public class SysResource implements Serializable {
     private String name;
     @TableField("type")
     private String type;
-    /*@TableField("url")
-    private String url;*/
+    @TableField("url")
+    private String url;
     @TableField("parent_id")
     private Integer parentId;
     @TableField("permission")
@@ -62,14 +63,14 @@ public class SysResource implements Serializable {
         this.type = type;
     }
 
-    /*public String getUrl() {
+    public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
-    }*/
-
+    }
+    @JsonGetter("pid")
     public Integer getParentId() {
         return parentId;
     }

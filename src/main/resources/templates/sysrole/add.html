@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>后台管理系统</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/layui/css/layui.css"  media="all">
+  <link rel="stylesheet" href="/layui/css/eleTree.css"  media="all">
+</head>
+<body>
+<!-- <div id="oneCheck" style="display:none">
+	<span>hehehehehe</span>
+</div> -->
+<div class="layui-container">
+	<form class="layui-form layui-form-pane" id="form1">
+		<!-- 第1行 -->
+		<input type="hidden" id="id" name="id" th:value="${pro?.id}"/>
+		<!-- 第1行 -->
+<!-- <div class="layui-row">
+	<div class="layui-col-md5 layui-col-md-offset3">
+		<div class="layui-form-item">
+			<label class="layui-form-label">id</label>
+			<div class="layui-input-block" >
+				<input type="text" name="id" th:value="${pro?.id}" lay-verify="title" autocomplete="off" placeholder="id" class="layui-input">
+			</div>
+		</div>
+	</div>
+</div> -->
+<!-- 第2行 -->
+<div class="layui-row">
+	<div class="layui-col-md5 layui-col-md-offset3">
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色编码</label>
+			<div class="layui-input-block" >
+				<input type="text" name="role" th:value="${pro?.role}" lay-verify="title" autocomplete="off" placeholder="请输入角色编码" class="layui-input">
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 第3行 -->
+<div class="layui-row">
+	<div class="layui-col-md5 layui-col-md-offset3">
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色描述</label>
+			<div class="layui-input-block" >
+				<input type="text" name="description" th:value="${pro?.description}" lay-verify="title" autocomplete="off" placeholder="请输入角色描述" class="layui-input">
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 第4行 -->
+<div class="layui-row">
+	<div class="layui-col-md5 layui-col-md-offset3">
+		<div class="layui-form-item">
+			<label class="layui-form-label">访问资源</label>
+			<div class="layui-input-block" >
+				<!-- <input type="text" name="resourceIds" th:value="${pro?.resourceIds}" lay-verify="title" autocomplete="off" placeholder="请选择访问资源" class="layui-input"> -->
+				<div id="resourceIds" class="demo-tree"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 第5行 -->
+<div class="layui-row">
+	<div class="layui-col-md5 layui-col-md-offset3">
+		<div class="layui-form-item">
+			<label class="layui-form-label">是否可用</label>
+			<div class="layui-input-block" >
+				<input type="text" name="available" th:value="${pro?.available}" lay-verify="title" autocomplete="off" placeholder="请选择是否可用:1是2否" class="layui-input">
+			</div>
+		</div>
+	</div>
+</div>
+
+		<!-- 按钮 -->
+		 <div class="layui-row">
+		    <div class="layui-col-md5 layui-col-md-offset3 ">
+		    	<button type="button" class="layui-btn layui-btn-normal layui-btn-fluid onSave"><i class="layui-icon layui-icon-ok-circle"></i><span th:text="${#strings.isEmpty(pro)}?'保存':'更新'"></span></button>
+		    </div>
+		 </div>
+	</form>
+</div>
+<script src="/layui/layui.all.js" charset="utf-8"></script>
+<script type="text/javascript">
+layui.use(['form', 'layedit', 'laydate','element','jquery','tree'], function() {
+	var form = layui.form,
+	layer = layui.layer,
+	element=layui.element,
+	tree = layui.tree,
+	$=layui.jquery;
+	$.ajax({
+		url:'/sysresource/tree',
+		success:function(res){
+			//开启复选框
+			  tree.render({
+			    elem: '#resourceIds'
+			    ,data: res.data
+			    ,showCheckbox: true
+			    ,id: 'demoId' //定义索引
+			  });
+			  //勾选节点
+			  $.ajax({
+					url:'/sysresource/tree/filter',
+					data:{"role":$("#id").val()},
+					success:function(rr){
+						//console.info(rr.data)
+						tree.setChecked('demoId', rr.data); //批量勾选 id 为 2、3 的节点
+					}
+			  });
+		}
+	})
+	//保存、更新按钮
+	$(document).on('click','.onSave',function(){
+		var form1 = $("#form1").serialize();
+		var url = '';
+		if($('#id').val()==''){
+			url = '/sysrole/save'
+		}else{
+			url = '/sysrole/update'
+		}
+		//var checkData = tree.getChecked('demoId');
+		$.ajax({
+			url:url,
+			data:form1,
+			success:function(data){
+				if(data.code == 0){
+					location.href="/page/sysrole/list";
+				}else{
+					layer.msg(data.msg)
+				}
+			}
+		})
+	});
+});
+</script>
+</body>
+</html>

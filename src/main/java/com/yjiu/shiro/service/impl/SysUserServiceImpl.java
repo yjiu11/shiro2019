@@ -1,7 +1,7 @@
 package com.yjiu.shiro.service.impl;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -75,8 +75,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		Set<String> result = new HashSet<String>();
 		Set<SysResource> resources = findResourcesById(user_id);
 		for (SysResource r : resources) {
-			if(StringUtils.isNotBlank(r.getPermission())) {
-				result.add(r.getPermission());
+			if(r !=null) {
+				if(StringUtils.isNotBlank(r.getPermission())) {
+					result.add(r.getPermission());
+				}
 			}
 			/*String url = r.getUrl();
 			if ("".equals(url)) {
@@ -137,19 +139,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	}
 
 	@Override
-	public PTWResult selectByPage(Page<SysUser> page, String field, String order, String realName, String username) {
+	public PTWResult selectByPage(Page<SysUser> page, String field, String order,
+			Map<String, String> searchFields) {
 		boolean flag = StringUtils.equals(order, "desc")?false:true;
 		EntityWrapper<SysUser> wrapper = new EntityWrapper<SysUser>();
-		if(!StringUtils.isEmpty(realName)) {
-			System.out.println("realname not null:"+realName);
-			wrapper.like("realname", realName);
+		Set<String> keys = searchFields.keySet();
+		for (String k : keys) {
+			if(!StringUtils.isEmpty(searchFields.get(k))) {
+				System.out.println(k+":"+searchFields.get(k));
+				wrapper.like(k, searchFields.get(k));
+			}
 		}
-		if(!StringUtils.isEmpty(username)) {
-			System.out.println("username not null:"+username);
-			wrapper.like("username", username);
-		}
-		//求总数，不需要排序
-//		int total = selectCount(wrapper);
 		wrapper.orderBy(field, flag);
 		Page<SysUser> selectPage = this.selectPage(page, wrapper);
 		System.out.println(selectPage.getTotal());

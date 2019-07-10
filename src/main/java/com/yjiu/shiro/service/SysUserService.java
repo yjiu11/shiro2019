@@ -1,5 +1,6 @@
 package com.yjiu.shiro.service;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.baomidou.mybatisplus.plugins.Page;
@@ -29,5 +30,5 @@ public interface SysUserService extends IService<SysUser> {
 	//有资源所有信息
 	public Set<SysResource> findResourcesById(long user_id);
 	//分页+排序+搜索
-	PTWResult selectByPage(Page<SysUser> page,String field,String order, String realName,String username);
+	PTWResult selectByPage(Page<SysUser> page,String field,String order, Map<String,String> searchFields);
 }

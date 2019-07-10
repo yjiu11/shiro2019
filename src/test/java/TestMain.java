@@ -21,8 +21,5 @@ public class TestMain {
 	private SysUserMapper userMapper;
 	@Test
 	public void t1() {
-		PTWResult result = userService.selectByPage(new Page<>(1,10),"","asc","ad","张");
-//		List<SysUser> selectList = userMapper.selectList(new EntityWrapper<SysUser>().like("username", "ad"));
-		System.out.println(result);
 	}
 }
