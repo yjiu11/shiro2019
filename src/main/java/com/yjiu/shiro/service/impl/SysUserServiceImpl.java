@@ -1,10 +1,13 @@
 package com.yjiu.shiro.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,5 +157,45 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		Page<SysUser> selectPage = this.selectPage(page, wrapper);
 		System.out.println(selectPage.getTotal());
 		return PTWResult.ok(selectPage.getRecords(),selectPage.getTotal());
+	}
+	/*
+	 * 获取菜单
+	 */
+	@Override
+	public PTWResult getMenu() {
+		// TODO Auto-generated method stub
+		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+		ArrayList<SysResource> list = new ArrayList<SysResource>();
+		// 根据用户的ID查询对应的所有权限
+		SysUser sysuser = (SysUser) currentUser.getPrincipal();
+		Set<SysResource> resourceset = this.findResourcesById(sysuser.getId());
+		//已重写equals和hashCode方法
+		Iterator<SysResource> iterator = resourceset.iterator();
+		while(iterator.hasNext()) {
+			SysResource sysresource = iterator.next();
+			if(sysresource!=null) {
+				list.add(sysresource);
+			}
+		}
+		return PTWResult.ok(list);
+	}
+	/* (non-Javadoc)
+	 * 更改用户密码
+	 */
+	@Override
+	public PTWResult updatepwd(String password) {
+		// TODO Auto-generated method stub
+		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+		SysUser sysuser = (SysUser) currentUser.getPrincipal();
+		sysuser.setPassword(password);
+		String pass = Kit.generatePass(sysuser);
+		sysuser.setPassword(pass);
+		System.err.println("用户名:"+sysuser.getUsername()+"更改后密码:"+pass);
+		EntityWrapper<SysUser> wrapper = new EntityWrapper<SysUser>();
+		boolean update = this.update(sysuser, wrapper.eq("id", sysuser.getId()));
+		if(update) {
+			return PTWResult.ok();
+		}
+		return PTWResult.build(-1, "修改失败");
 	}
 }

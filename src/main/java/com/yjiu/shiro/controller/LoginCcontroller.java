@@ -37,7 +37,7 @@ public class LoginCcontroller {
 	}
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "index";
+		return "index2";
 	}
 	/*@RequestMapping(value = "unauth", method = RequestMethod.GET)
 	@ResponseBody

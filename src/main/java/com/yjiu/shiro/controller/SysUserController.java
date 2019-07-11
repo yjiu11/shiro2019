@@ -118,5 +118,18 @@ public class SysUserController {
 		SysUser one = thisService.selectOne(new EntityWrapper<SysUser>().eq("id", id));
 		return PTWResult.ok(one);
 	}
+	/**
+	 * 首页菜单获取
+	 * */
+	@RequestMapping("system/menu/getMenu")
+    @ResponseBody
+	public PTWResult getMenu() {
+		return thisService.getMenu();
+	}
+	@RequestMapping("/sysuser/updatepwd")
+    @ResponseBody
+	public PTWResult updatepwd(String password) {
+		return thisService.updatepwd(password);
+	}
 }
 

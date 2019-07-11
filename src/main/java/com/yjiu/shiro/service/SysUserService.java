@@ -31,4 +31,15 @@ public interface SysUserService extends IService<SysUser> {
 	public Set<SysResource> findResourcesById(long user_id);
 	//分页+排序+搜索
 	PTWResult selectByPage(Page<SysUser> page,String field,String order, Map<String,String> searchFields);
+	/**
+	 * @return
+	 * 获取所有的菜单树
+	 */
+	public PTWResult getMenu();
+	/**
+	 * @param password
+	 * @return
+	 * 更改用户密码
+	 */
+	public PTWResult updatepwd(String password);
 }

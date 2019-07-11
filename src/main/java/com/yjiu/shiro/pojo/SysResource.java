@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  * <p>
@@ -70,7 +69,7 @@ public class SysResource implements Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
-    @JsonGetter("pid")
+//    @JsonGetter("pid")
     public Integer getParentId() {
         return parentId;
     }
@@ -115,4 +114,28 @@ public class SysResource implements Serializable {
         ", open=" + open +
         "}";
     }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SysResource other = (SysResource) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 }

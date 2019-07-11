@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>中控管理系统</title>
+<!-- <link rel="icon" type="image/png" href="image/favicon.png"> -->
+<link rel="stylesheet" href="js/layui/css/layui.css">
+<link href="js/contextMenu/jquery.contextMenu.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="js/assets/css/admin.css" />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script src="js/contextMenu/jquery.contextMenu.min.js"></script>
+<link rel="stylesheet" href="js/ztree/css/metroStyle/metroStyle.css">
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<div class="layui-header" style="background-color: #2F9688;">
+			<div class="layui-logo"
+				style="background: #3daa97; color: #f2f2f2; font-size: 20px;">中控平台</div>
+			<a href="javascript:;" class="layui-hide-xs"><div
+					class="sykSwitchMenu">
+					<i class="fa fa-outdent"></i>
+				</div></a>
+			<!-- 头部区域（可配合layui已有的水平导航） -->
+			<!-- top left   -->
+
+			<ul class="layui-nav layui-layout-left admin-top-menu"
+				id="adminTopMenu" lay-filter="adminTopMenu">
+			</ul>
+
+			<!-- top right  -->
+			<ul class="layui-nav layui-layout-right">
+				<li class="layui-nav-item"><a href="javascript:;"> <img
+						src="http://t.cn/RCzsdCq" class="layui-nav-img"> <shiro:principal
+							property="realname" /></a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="">基本资料</a>
+						</dd>
+						<dd>
+							<a href="">安全设置</a>
+						</dd>
+						<dd>
+							<a onclick="respwd()">修改密码</a>
+						</dd>
+					</dl></li>
+				<li class="layui-nav-item"><a th:href="@{/logout}">注销</a></li>
+			</ul>
+		</div>
+
+		<div class="layui-side layui-bg-cyan ">
+			<div class="layui-side-scroll">
+				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+				<ul class="layui-nav layui-nav-tree layui-bg-cyan  layui-inline"
+					lay-filter="adminLeftMenu" id="adminLeftMenu">
+				</ul>
+			</div>
+		</div>
+		<div class="layui-body">
+			<div class="layui-tab layui-tab-card admin-main-tab"
+				lay-filter="adminMainTab" lay-allowClose="true">
+				<!-- 菜单导航 -->
+				<ul class="layui-tab-title" id="adminMainTab">
+					<li class="layui-this" lay-id="1"><i class="layui-icon">&#xe68e;</i><cite>首页</cite>
+						<p class="layui-tab-close" style="display: none;"></p></li>
+				</ul>
+				<!-- 内容 -->
+				<div class="layui-tab-content" id="main">
+					<div class="layui-tab-item layui-show" lay-id="1">
+						<!-- <iframe src="main.html"></iframe> -->
+						<h1>Welcome to this</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-footer">
+			<!-- 底部固定区域 -->
+			<p>
+				© 2019 <a href="http://www.51tour.com/" target="_blank">北京凤凰假期国际旅行社</a>
+			</p>
+		</div>
+	</div>
+	<!--修改密码  -->
+
+
+
+	<script src="js/layui/layui.js"></script>
+	<script src="js/assets/js/admin.js"></script>
+	<script src="js/assets/js/tools.js"></script>
+	<script type="text/javascript" src="js/of/admin/js/admin.core.js"></script>
+	<script type="text/javascript" src="js/of/admin/js/admin.index.js"></script>
+	<script>
+		layui.use([ 'layer', 'form', 'element', "admin.tab" ],
+		function() {
+			var layer = layui.layer, form = layui.form, element = layui.element, tab = layui['admin.tab'];
+			layer.msg('欢迎光临!');
+			});
+	</script>
+	<script type="text/javascript">
+		function respwd() {
+			layer.open({
+				type : 1,
+				area : [ '366px', '248px' ],
+				fixed : false, //不固定
+				maxmin : true,
+				content :$('#respwd')
+			});
+		}
+		
+		layui.use('form', function(){
+			  var form = layui.form;
+			  //监听提交
+			  form.on('submit(LAY-user-login-submit)', function(data){
+				 var pwd=$('#pwd').val()
+				 var newpwd=$('#newpwd').val()
+				 if(pwd==newpwd){
+					 $.ajax({
+				    		url:'/sysuser/updatepwd',
+				    		data:{password:pwd},
+				    		success:function(data){
+				    			 if(data.code==0){
+				    				 
+					    	        layer.alert('修改成功！',function (index) { 
+					    	        	$('#pwd').val('')
+					    	        	$('#newpwd').val('')
+					    	        	layer.closeAll()
+					    	        })
+					    	        
+				    			}else{
+				    				 layer.alert(data.msg)
+				    			} 
+				    		}
+				    	}) 
+				    	 return false; 
+				 }else{
+					 layer.msg('俩次输入密码不一致，请重新输入')
+					 return false;  
+				 }
+				 
+			  });
+			});
+	</script>
+</body>
+<!--修改密码窗口  -->
+<div  id="respwd" hidden="true">
+	<form class="layui-form" id="edit_form">
+		<!-- <input type="hidden" name="user_id"
+			value="<shiro:principal property='realname'/>" /> -->
+		<div class="layui-form-item">
+			<label class="layui-form-label">新密码:</label>
+			<div class="layui-input-inline">
+				<input type="password" id="newpwd" placeholder="请输入新密码"
+					required="" lay-verType="tips" lay-verify="required"
+					autocomplete="off" class="layui-input" />
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">新密码:</label>
+			<div class="layui-input-inline">
+				<input type="password" id="pwd"  placeholder="请再次输入新密码"
+					required="" lay-verType="tips" lay-verify="required"
+					autocomplete="off" class="layui-input" />
+			</div>
+		</div>
+		<hr />
+		<div class="layui-form-item" style="text-align: center;">
+			<button class="layui-btn" lay-submit lay-filter="LAY-user-login-submit" >
+				<i class="layui-icon">&#xe642;</i>修改密码
+			</button>
+		</div>
+	</form>
+
+</div>
+</html>
