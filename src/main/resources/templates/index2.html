@@ -101,9 +101,12 @@
 	</script>
 	<script type="text/javascript">
 		function respwd() {
+			$('#oldpwd').val('')
+        	$('#pwd').val('')
+        	$('#newpwd').val('')
 			layer.open({
 				type : 1,
-				area : [ '366px', '248px' ],
+				area : [ '350px', '290px' ],
 				fixed : false, //不固定
 				maxmin : true,
 				content :$('#respwd')
@@ -114,16 +117,21 @@
 			  var form = layui.form;
 			  //监听提交
 			  form.on('submit(LAY-user-login-submit)', function(data){
+				 var oldpwd=$('#oldpwd').val()
 				 var pwd=$('#pwd').val()
 				 var newpwd=$('#newpwd').val()
 				 if(pwd==newpwd){
 					 $.ajax({
 				    		url:'/sysuser/updatepwd',
-				    		data:{password:pwd},
+				    		data:{
+				    			 password:pwd,
+				    			 oldpassword:oldpwd
+				    			 },
 				    		success:function(data){
 				    			 if(data.code==0){
 				    				 
 					    	        layer.alert('修改成功！',function (index) { 
+					    	        	$('#oldpwd').val('')
 					    	        	$('#pwd').val('')
 					    	        	$('#newpwd').val('')
 					    	        	layer.closeAll()
@@ -149,6 +157,14 @@
 	<form class="layui-form" id="edit_form">
 		<!-- <input type="hidden" name="user_id"
 			value="<shiro:principal property='realname'/>" /> -->
+			<div class="layui-form-item">
+			<label class="layui-form-label">旧密码:</label>
+			<div class="layui-input-inline">
+				<input type="password" id="oldpwd" placeholder="请输入旧密码"
+					required="" lay-verType="tips" lay-verify="required"
+					autocomplete="off" class="layui-input" />
+			</div>
+		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">新密码:</label>
 			<div class="layui-input-inline">

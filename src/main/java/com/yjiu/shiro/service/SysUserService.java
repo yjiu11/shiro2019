@@ -41,5 +41,5 @@ public interface SysUserService extends IService<SysUser> {
 	 * @return
 	 * 更改用户密码
 	 */
-	public PTWResult updatepwd(String password);
+	public PTWResult updatepwd(String password,String oldpassword);
 }

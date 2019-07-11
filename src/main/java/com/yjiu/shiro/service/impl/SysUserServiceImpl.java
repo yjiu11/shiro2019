@@ -26,6 +26,8 @@ import com.yjiu.shiro.service.SysUserService;
 import com.yjiu.shiro.tools.Kit;
 import com.yjiu.shiro.tools.PTWResult;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * <p>
  *  服务实现类
@@ -35,6 +37,7 @@ import com.yjiu.shiro.tools.PTWResult;
  * @since 2019-03-30
  */
 @Service
+@Slf4j
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 	@Autowired
 	private SysRoleService roleService;
@@ -183,19 +186,31 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	 * 更改用户密码
 	 */
 	@Override
-	public PTWResult updatepwd(String password) {
+	public PTWResult updatepwd(String password,String oldpassword) {
 		// TODO Auto-generated method stub
+		//通过shiro获取用户的对象
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 		SysUser sysuser = (SysUser) currentUser.getPrincipal();
-		sysuser.setPassword(password);
-		String pass = Kit.generatePass(sysuser);
-		sysuser.setPassword(pass);
-		System.err.println("用户名:"+sysuser.getUsername()+"更改后密码:"+pass);
+		//根据对象的ID再从数据库内查询一次    因为上面的对象不同步
+		sysuser = this.selectById(sysuser.getId());
+		//通过shiro获得的对象 不要重新赋值！！！！！
+		SysUser user = new SysUser();
+		user.setId(sysuser.getId());
+		user.setUsername(sysuser.getUsername());
+		user.setPassword(oldpassword);
+		
+		 if(!Kit.generatePass(user).equals(sysuser.getPassword())) {
+			 return PTWResult.build(-1, "旧密码输入错误!");
+		 }
+		 user.setPassword(password);
+		String pass = Kit.generatePass(user);
+		user.setPassword(pass);
 		EntityWrapper<SysUser> wrapper = new EntityWrapper<SysUser>();
-		boolean update = this.update(sysuser, wrapper.eq("id", sysuser.getId()));
-		if(update) {
+		boolean update = this.update(user, wrapper.eq("id", sysuser.getId()));
+		if (update) {
+			log.info("用户名:" + user.getUsername() + "更改后密码:" + password + "数据库的密码:" + pass);
 			return PTWResult.ok();
 		}
-		return PTWResult.build(-1, "修改失败");
+		return PTWResult.build(-1, "修改失败!");
 	}
 }

@@ -128,8 +128,8 @@ public class SysUserController {
 	}
 	@RequestMapping("/sysuser/updatepwd")
     @ResponseBody
-	public PTWResult updatepwd(String password) {
-		return thisService.updatepwd(password);
+	public PTWResult updatepwd(String password,String oldpassword) {
+		return thisService.updatepwd(password,oldpassword);
 	}
 }
 
